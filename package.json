@@ -1,0 +1,14 @@
+{
+  "name": "vallies",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5"
+  }, 
+  "scripts": {
+    "start": "node src/index.js",
+    "start/nodemon": "nodemon src/index.js"
+  }
+}
