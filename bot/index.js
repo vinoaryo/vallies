@@ -5,11 +5,15 @@ const {
   IntentsBitField,
   Collection,
   ActivityType,
+  REST,
+  Routes,
 } = require("discord.js");
 require("dotenv").config();
 
 const TOKEN = process.env.TOKEN;
 const PREFIX = process.env.PREFIX;
+const GUILD_ID = process.env.GUILD_ID;
+const CLIENT_ID = process.env.CLIENT_ID;
 
 const bot = new Client({
   intents: [
@@ -35,16 +39,17 @@ const loadCommands = (commandsPath, category) => {
 };
 
 async function init() {
-  await bot.once("ready", () => {
+  await bot.once("ready", async () => {
     console.log(`Logged in as ${bot.user.tag}`);
 
     bot.user.setActivity("Valhalla Journey", { type: ActivityType.Watching });
     console.log("Activity set to Watching Valhalla Journey");
 
+    // Load message commands
     loadCommands(path.join(__dirname, "commands", "misc"), "Misc");
     loadCommands(path.join(__dirname, "commands", "mod"), "Mod");
 
-    require("../website/index");
+    // Set bot activity
   });
 
   bot.on("messageCreate", (message) => {

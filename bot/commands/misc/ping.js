@@ -4,9 +4,6 @@ module.exports = {
   devOnly: false,
   adminOnly: false,
   execute(message, args, bot) {
-    if (!message.member.roles.has("Valkyrie")) {
-      return message.reply("You're cant use that command!");
-    }
     message.channel.send("Fetching...").then(async (msg) => {
       msg.delete();
       message.channel.send(
