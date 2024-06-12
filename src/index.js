@@ -7,6 +7,7 @@ const {
   ActivityType,
 } = require("discord.js");
 require("dotenv").config();
+const http = require("http");
 
 const TOKEN = process.env.TOKEN;
 const PREFIX = process.env.PREFIX;
@@ -21,6 +22,24 @@ const bot = new Client({
 });
 
 bot.commands = new Collection();
+
+http
+  .createServer((req, res) => {
+    res.write("OK!\n");
+
+    const commandList = [];
+    bot.commands.forEach((command) => {
+      commandList.push(
+        `Name: ${command.name}, Description: ${command.description}`
+      );
+    });
+
+    res.write(commandList.join("\n"));
+    res.end();
+  })
+  .listen(8080, () => {
+    console.log("Server is listening on port 8080");
+  });
 
 const loadCommands = (commandsPath, category) => {
   const commandFiles = fs
