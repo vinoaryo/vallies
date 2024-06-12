@@ -23,24 +23,6 @@ const bot = new Client({
 
 bot.commands = new Collection();
 
-http
-  .createServer((req, res) => {
-    res.write("OK!\n");
-
-    const commandList = [];
-    bot.commands.forEach((command) => {
-      commandList.push(
-        `Name: ${command.name}, Description: ${command.description}`
-      );
-    });
-
-    res.write(commandList.join("\n"));
-    res.end();
-  })
-  .listen(8080, () => {
-    console.log("Server is listening on port 8080");
-  });
-
 const loadCommands = (commandsPath, category) => {
   const commandFiles = fs
     .readdirSync(commandsPath)
@@ -82,3 +64,23 @@ bot.on("messageCreate", (message) => {
 });
 
 bot.login(TOKEN);
+
+http
+  .createServer((req, res) => {
+    res.write("Commands List:\n\n");
+
+    bot.commands.forEach((command) => {
+      res.write(`Name: ${command.name}\n`);
+      res.write(
+        `Description: ${command.description || "No description provided"}\n`
+      );
+      res.write(`Developer Only: ${command.devOnly ? "Yes" : "No"}\n`);
+      res.write(`Admin Only: ${command.adminOnly ? "Yes" : "No"}\n`);
+      res.write("\n"); // Add an empty line for spacing between commands
+    });
+
+    res.end();
+  })
+  .listen(8080, () => {
+    console.log("Server is listening on port 8080");
+  });
