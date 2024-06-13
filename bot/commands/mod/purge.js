@@ -4,22 +4,31 @@ module.exports = {
   devOnly: false,
   adminOnly: true,
   async execute(message, args, bot) {
-    if (!message.member.permissions.has("MANAGE_MESSAGES")) {
-      return message.reply("You do not have permissions to delete messages.");
+    // Check if the member has the required roles
+    const ownerRoleID = "1231564557462409257"; // Owner role ID
+    const adminRoleID = "1231555407000895489"; // Admin role ID
+
+    // Check if the member has either the owner role or the admin role
+    if (
+      !message.member.roles.cache.has(ownerRoleID) &&
+      !message.member.roles.cache.has(adminRoleID)
+    ) {
+      return message.reply("You can't execute that command!");
     }
 
-    const amount = parseInt(args[0]);
-    if (isNaN(amount) || amount <= 0) {
+    const amount = parseInt(args[0]) + 1;
+    if (isNaN(amount) || amount <= 0 || amount > 100) {
       return message.reply(
-        "You need to specify a valid number of messages to delete."
+        "You need to specify a valid number of messages to delete (1-99)."
       );
     }
 
     try {
-      await message.channel.bulkDelete(amount, true);
-      message
-        .reply(`Deleted ${amount} messages.`)
-        .then(async (msg) => setTimeout(msg.delete(), 2000));
+      // Fetch and delete the specified number of messages
+      const fetched = await message.channel.messages.fetch({
+        limit: amount,
+      });
+      await message.channel.bulkDelete(fetched, true);
     } catch (error) {
       console.error(error);
       message.reply(

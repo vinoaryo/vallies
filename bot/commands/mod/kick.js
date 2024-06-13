@@ -4,10 +4,18 @@ module.exports = {
   devOnly: false,
   adminOnly: true,
   async execute(message, args, bot) {
-    if (!message.member.permissions.has("BAN_MEMBERS")) {
-      return message.reply("You do not have permissions to ban members.");
-    }
+    // Check if the member has the required roles
+    const ownerRoleID = "1231564557462409257"; // Owner role ID
+    const adminRoleID = "1231555407000895489"; // Admin role ID
 
+    // Check if the member has either the owner role or the admin role
+    if (
+      !message.member.roles.cache.has(ownerRoleID) &&
+      !message.member.roles.cache.has(adminRoleID)
+    ) {
+      return message.reply("You can't execute that command!");
+    }
+    
     const user = message.mentions.users.first();
     if (!user) {
       return message.reply("You need to mention the user to ban them.");

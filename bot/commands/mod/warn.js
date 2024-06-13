@@ -6,11 +6,16 @@ module.exports = {
   devOnly: false,
   adminOnly: true,
   async execute(message, args, bot) {
-    // Check if the user has the 'MANAGE_MESSAGES' permission
+    // Check if the member has the required roles
+    const ownerRoleID = "1231564557462409257"; // Owner role ID
+    const adminRoleID = "1231555407000895489"; // Admin role ID
+
+    // Check if the member has either the owner role or the admin role
     if (
-      !message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)
+      !message.member.roles.cache.has(ownerRoleID) &&
+      !message.member.roles.cache.has(adminRoleID)
     ) {
-      return message.reply("You do not have permissions to warn members.");
+      return message.reply("You can't execute that command!");
     }
 
     // Get the mentioned user

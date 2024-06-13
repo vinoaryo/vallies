@@ -7,6 +7,7 @@ const {
   ActivityType,
   REST,
   Routes,
+  EmbedBuilder,
 } = require("discord.js");
 require("dotenv").config();
 
@@ -25,6 +26,23 @@ const bot = new Client({
 });
 
 bot.commands = new Collection();
+
+const log = (msg) => {
+  const currentDate = new Date();
+
+  const logMessage = `\`\`\`$ ${msg}\`\`\``;
+  bot.channels.cache.get("1250544150986625085").send(logMessage);
+
+  // const embed = new EmbedBuilder()
+  //   .setTitle("Log Message")
+  //   .setDescription()
+  //   .setFooter({
+  //     text: `${currentDate.toDateString()} ${currentDate.toTimeString()}`,
+  //   })
+  //   .setColor("#ffd808");
+
+  // bot.channels.cache.get("1250544150986625085").send({ embeds: [embed] });
+};
 
 const loadCommands = (commandsPath, category) => {
   const commandFiles = fs
@@ -49,6 +67,8 @@ async function init() {
     loadCommands(path.join(__dirname, "commands", "misc"), "Misc");
     loadCommands(path.join(__dirname, "commands", "mod"), "Mod");
 
+    log(`${bot.user.tag} is started`);
+
     // Set bot activity
   });
 
@@ -64,6 +84,7 @@ async function init() {
 
     try {
       command.execute(message, args, bot);
+      log(`${message.author.tag} executed ${commandName}`);
     } catch (error) {
       console.error(`Error executing command ${commandName}:`, error);
       message.reply("There was an error trying to execute that command!");
@@ -73,4 +94,4 @@ async function init() {
   bot.login(TOKEN);
 }
 
-module.exports = { init, bot };
+module.exports = { init, bot, log };
